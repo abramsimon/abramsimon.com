@@ -1,5 +1,6 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { render } from 'astro:content';
 
@@ -16,6 +17,8 @@ const post = Astro.props;
 const { Content } = await render(post);
 ---
 
-<BlogPost {...post.data}>
-	<Content />
-</BlogPost>
+<SiteLayout title={post.data.title} description={post.data.description} image={post.data.heroImage}>
+	<BlogPost {...post.data}>
+		<Content />
+	</BlogPost>
+</SiteLayout>
