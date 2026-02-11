@@ -1,0 +1,74 @@
+---
+interface Props {
+	productId: string;
+	productName: string;
+	priceCents: number;
+}
+
+const { productId, productName, priceCents } = Astro.props;
+---
+
+<button type="button" class="add-to-cart-btn" data-product-id={productId} data-product-name={productName} data-price-cents={priceCents}>
+	Add to cart
+</button>
+
+<script>
+	import { CART_STORAGE_KEY, type CartItem } from '../lib/cart';
+
+	function getCart(): CartItem[] {
+		if (typeof window === 'undefined') return [];
+		try {
+			const raw = localStorage.getItem(CART_STORAGE_KEY);
+			return raw ? JSON.parse(raw) : [];
+		} catch {
+			return [];
+		}
+	}
+
+	function setCart(items: CartItem[]) {
+		localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+		window.dispatchEvent(new CustomEvent('cart-update'));
+	}
+
+	document.addEventListener('click', (e) => {
+		const btn = (e.target as HTMLElement).closest('.add-to-cart-btn');
+		if (!btn) return;
+		const id = btn.getAttribute('data-product-id');
+		const name = btn.getAttribute('data-product-name');
+		const price = btn.getAttribute('data-price-cents');
+		if (!id || !name || !price) return;
+		const priceCents = parseInt(price, 10);
+		const cart = getCart();
+		const existing = cart.find((i) => i.id === id);
+		if (existing) {
+			existing.quantity += 1;
+		} else {
+			cart.push({ id, name, priceCents, quantity: 1 });
+		}
+		setCart(cart);
+	});
+</script>
+
+<style>
+	.add-to-cart-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.65rem 1.5rem;
+		background: var(--accent);
+		color: #05140d;
+		border: none;
+		border-radius: 999px;
+		font-weight: 700;
+		font-size: 1rem;
+		cursor: pointer;
+		font-family: inherit;
+		box-shadow: 0 6px 20px rgba(var(--coffee-dark), 0.35);
+		transition: background 0.15s ease, transform 0.1s ease;
+	}
+	.add-to-cart-btn:hover {
+		background: var(--accent-dark);
+		color: #f7fff8;
+		transform: translateY(-1px);
+	}
+</style>

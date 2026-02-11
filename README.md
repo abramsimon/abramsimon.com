@@ -63,6 +63,43 @@ All commands are run from the root of the project, from a terminal:
 
 Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
 
+## Shop (ecommerce)
+
+The site includes a shop for merch, vinyl, whole bean coffee, and accessories:
+
+- **Product catalog**: `/shop/` and `/shop/[slug]/` (data in `src/data/products.ts`).
+- **Cart**: Client-side only (localStorage). Cart drawer opens from the header; checkout uses Stripe Checkout.
+- **Backend**: `POST /api/create-checkout-session` runs on Cloudflare (serverless). It creates a Stripe Checkout Session and returns the redirect URL.
+
+### Stripe
+
+1. Create a [Stripe](https://stripe.com) account and get your **Secret key** (Dashboard → Developers → API keys).
+2. For local dev, create `.dev.vars` in the project root (git-ignored) with:
+   ```ini
+   STRIPE_SECRET_KEY=sk_test_...
+   ```
+3. For Cloudflare deploy, set the secret:
+   ```bash
+   npx wrangler secret put STRIPE_SECRET_KEY
+   ```
+
+### Cloudflare deploy
+
+The site uses `@astrojs/cloudflare` with `output: 'server'`. Deploy with Cloudflare Pages (connect the repo and set build command `npm run build`, output directory `dist`) or:
+
+```bash
+npm run build
+npx wrangler pages deploy dist --project-name=abramsimon-com
+```
+
+If you see an error about the `SESSION` KV binding, create a KV namespace and add it to `wrangler.toml`:
+
+```bash
+npx wrangler kv:namespace create SESSION
+```
+
+Then uncomment the `[[kv_namespaces]]` block in `wrangler.toml` and set `id` to the returned namespace id.
+
 ## Credit
 
 This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
