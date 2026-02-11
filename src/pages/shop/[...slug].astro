@@ -1,0 +1,106 @@
+---
+export const prerender = true;
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { SITE_TITLE } from '../../consts';
+import { getProductBySlug, PRODUCTS } from '../../data/products';
+import AddToCart from '../../components/AddToCart.astro';
+
+export function getStaticPaths() {
+	return PRODUCTS.map((product) => ({
+		params: { slug: product.slug },
+		props: { product },
+	}));
+}
+
+const { product } = Astro.props;
+---
+
+<SiteLayout
+	title={`${product.name} – Shop – ${SITE_TITLE}`}
+	description={product.description}
+	image={product.image}
+>
+	<article class="product-page">
+		<div class="product-main">
+			<div class="product-image">
+				<img
+					width="600"
+					height="450"
+					src={product.image}
+					alt=""
+				/>
+			</div>
+			<div class="product-detail">
+				<p class="product-category">{product.category}</p>
+				<h1 class="product-title">{product.name}</h1>
+				<p class="product-desc">{product.description}</p>
+				<p class="product-price">${(product.priceCents / 100).toFixed(2)}</p>
+				<AddToCart productId={product.id} productName={product.name} priceCents={product.priceCents} />
+			</div>
+		</div>
+		<p class="back-link"><a href="/shop/">← Back to shop</a></p>
+	</article>
+</SiteLayout>
+
+<style>
+	.product-page {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+	.product-main {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 2rem;
+		align-items: start;
+		margin-bottom: 2rem;
+	}
+	.product-image {
+		border-radius: 16px;
+		overflow: hidden;
+		box-shadow: 0 12px 32px rgba(var(--coffee-dark), 0.35);
+	}
+	.product-image img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	.product-detail {
+		padding-top: 0.25rem;
+	}
+	.product-category {
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
+		font-size: 0.8rem;
+		color: rgba(var(--gray), 0.9);
+		margin-bottom: 0.5rem;
+	}
+	.product-title {
+		font-size: 1.75rem;
+		margin: 0 0 0.75rem 0;
+		line-height: 1.2;
+		color: rgb(var(--coffee-dark));
+	}
+	.product-desc {
+		color: rgb(var(--gray-dark));
+		margin-bottom: 1rem;
+		line-height: 1.6;
+	}
+	.product-price {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--accent);
+		margin-bottom: 1.25rem;
+	}
+	.back-link {
+		margin: 0;
+	}
+	@media (max-width: 720px) {
+		.product-main {
+			grid-template-columns: 1fr;
+			gap: 1.5rem;
+		}
+		.product-title {
+			font-size: 1.5rem;
+		}
+	}
+</style>

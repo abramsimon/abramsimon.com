@@ -1,0 +1,128 @@
+---
+export const prerender = true;
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { SITE_TITLE } from '../../consts';
+import { PRODUCTS, PRODUCT_CATEGORIES, getProductsByCategory } from '../../data/products';
+---
+
+<SiteLayout
+	title={`Shop – ${SITE_TITLE}`}
+	description="Merch, vinyl records, whole bean coffee, and accessories. Brew & Groove."
+>
+	<section class="shop-intro">
+		<h1>Shop</h1>
+		<p>Merch, vinyl, whole bean coffee, and accessories. Everything we love, in one place.</p>
+	</section>
+
+	<section class="shop-categories">
+		{PRODUCT_CATEGORIES.map((cat) => {
+			const items = getProductsByCategory(cat.value);
+			if (items.length === 0) return null;
+			return (
+				<div class="category-block">
+					<h2 class="category-title">{cat.label}</h2>
+					<ul class="product-grid">
+						{items.map((product) => (
+							<li>
+								<a href={`/shop/${product.slug}/`} class="product-card">
+									<img
+										width="400"
+										height="300"
+										src={product.image}
+										alt=""
+										loading="lazy"
+									/>
+									<div class="product-card-body">
+										<h3 class="product-name">{product.name}</h3>
+										<p class="product-price">
+											${(product.priceCents / 100).toFixed(2)}
+										</p>
+									</div>
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			);
+		})}
+	</section>
+</SiteLayout>
+
+<style>
+	.shop-intro {
+		margin-bottom: 2rem;
+	}
+	.shop-intro h1 {
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+	.shop-intro p {
+		margin-top: 0.5rem;
+		color: rgba(var(--gray), 0.95);
+	}
+	.category-block {
+		margin-bottom: 2.5rem;
+	}
+	.category-title {
+		font-size: 1.1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.16em;
+		color: rgb(var(--coffee));
+		margin-bottom: 1rem;
+		border-bottom: 1px solid rgba(var(--gray-light), 0.8);
+		padding-bottom: 0.5rem;
+	}
+	.product-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 1.5rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.product-card {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+		background: rgba(var(--cream), 0.6);
+		border-radius: 12px;
+		overflow: hidden;
+		box-shadow: 0 4px 14px rgba(var(--coffee-dark), 0.2);
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+	.product-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 24px rgba(var(--coffee-dark), 0.35);
+	}
+	.product-card img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 4/3;
+		object-fit: cover;
+		display: block;
+	}
+	.product-card-body {
+		padding: 1rem;
+	}
+	.product-name {
+		font-size: 1rem;
+		margin: 0 0 0.35em 0;
+		line-height: 1.3;
+		color: rgb(var(--coffee-dark));
+	}
+	.product-price {
+		margin: 0;
+		font-weight: 700;
+		color: var(--accent);
+		font-size: 1rem;
+	}
+	@media (max-width: 720px) {
+		.product-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+		}
+		.product-card-body {
+			padding: 0.75rem;
+		}
+	}
+</style>

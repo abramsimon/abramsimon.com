@@ -8,10 +8,19 @@ import { SITE_TITLE } from '../consts';
 		<h2><a href="/">{SITE_TITLE}</a></h2>
 		<div class="internal-links">
 			<HeaderLink href="/">Home</HeaderLink>
+			<HeaderLink href="/shop/">Shop</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/about">About</HeaderLink>
 		</div>
 		<div class="social-links">
+			<button type="button" id="cart-open-btn" class="cart-open-btn" aria-label="Open shopping cart">
+				<svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+					<line x1="3" y1="6" x2="21" y2="6" />
+					<path d="M16 10a4 4 0 0 1-8 0" />
+				</svg>
+				<span id="cart-count" class="cart-count" aria-hidden="true">0</span>
+			</button>
 			<span class="social-pill">Open late • Analog only</span>
 		</div>
 	</nav>
@@ -62,6 +71,31 @@ import { SITE_TITLE } from '../consts';
 		align-items: center;
 	}
 
+	.cart-open-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		background: transparent;
+		border: none;
+		color: rgba(255, 251, 244, 0.9);
+		cursor: pointer;
+		padding: 0.5rem;
+		margin-right: 0.5rem;
+	}
+	.cart-open-btn:hover {
+		color: #fff;
+	}
+	.cart-icon {
+		width: 1.4rem;
+		height: 1.4rem;
+	}
+	.cart-count {
+		font-size: 0.8rem;
+		font-weight: 700;
+		min-width: 1.25rem;
+		text-align: center;
+	}
 	.social-pill {
 		padding: 0.35rem 0.9rem;
 		border-radius: 999px;
