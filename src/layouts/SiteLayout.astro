@@ -42,8 +42,17 @@ const { title, description, image } = Astro.props;
 					el.textContent = '0';
 				}
 			}
+			function bounceCartIcon() {
+				const btn = document.getElementById('cart-open-btn');
+				if (!btn) return;
+				btn.classList.remove('cart-open-btn-bounce');
+				btn.offsetHeight;
+				btn.classList.add('cart-open-btn-bounce');
+				setTimeout(() => btn.classList.remove('cart-open-btn-bounce'), 500);
+			}
 			updateCartCount();
 			window.addEventListener('cart-update', updateCartCount);
+			window.addEventListener('cart-item-added', bounceCartIcon);
 		</script>
 	</body>
 </html>

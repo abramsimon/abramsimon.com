@@ -39,7 +39,7 @@ import { CART_STORAGE_KEY, type CartItem } from '../lib/cart';
 		renderCart();
 	}
 
-	function renderCart() {
+	function renderCart(highlightProductId?: string) {
 		const cart = getCart();
 		const drawer = document.getElementById('cart-drawer');
 		const itemsEl = document.getElementById('cart-items');
@@ -60,6 +60,7 @@ import { CART_STORAGE_KEY, type CartItem } from '../lib/cart';
 				totalCents += item.priceCents * item.quantity;
 				const li = document.createElement('li');
 				li.className = 'cart-line';
+				li.setAttribute('data-product-id', item.id);
 				li.innerHTML = `
 					<div class="cart-line-info">
 						<span class="cart-line-name">${escapeHtml(item.name)}</span>
@@ -75,6 +76,13 @@ import { CART_STORAGE_KEY, type CartItem } from '../lib/cart';
 				itemsEl.appendChild(li);
 			});
 			totalEl.textContent = `$${(totalCents / 100).toFixed(2)}`;
+			if (highlightProductId) {
+				const line = itemsEl.querySelector(`[data-product-id="${highlightProductId}"]`);
+				if (line) {
+					line.classList.add('cart-line-just-added');
+					setTimeout(() => line.classList.remove('cart-line-just-added'), 1200);
+				}
+			}
 		}
 	}
 
@@ -108,7 +116,11 @@ import { CART_STORAGE_KEY, type CartItem } from '../lib/cart';
 		}
 	}
 
-	window.addEventListener('cart-update', renderCart);
+	window.addEventListener('cart-update', () => renderCart());
+	window.addEventListener('cart-item-added', ((e: CustomEvent<{ productId: string }>) => {
+		openDrawer();
+		renderCart(e.detail?.productId);
+	}) as EventListener);
 
 	document.addEventListener('click', (e) => {
 		const target = e.target as HTMLElement;
@@ -243,6 +255,23 @@ import { CART_STORAGE_KEY, type CartItem } from '../lib/cart';
 		gap: 0.75rem;
 		padding: 0.75rem 0;
 		border-bottom: 1px solid rgba(var(--gray-light), 0.6);
+		transition: background-color 0.25s ease, transform 0.25s ease;
+	}
+	.cart-line-just-added {
+		animation: cart-line-added 1.2s ease-out;
+	}
+	@keyframes cart-line-added {
+		0% {
+			background-color: rgba(var(--mint), 0.35);
+			transform: scale(1.02);
+		}
+		40% {
+			background-color: rgba(var(--mint), 0.2);
+		}
+		100% {
+			background-color: transparent;
+			transform: scale(1);
+		}
 	}
 	.cart-line-info {
 		display: flex;
