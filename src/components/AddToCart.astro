@@ -46,6 +46,7 @@ const { productId, productName, priceCents } = Astro.props;
 			cart.push({ id, name, priceCents, quantity: 1 });
 		}
 		setCart(cart);
+		window.dispatchEvent(new CustomEvent('cart-item-added', { detail: { productId: id } }));
 	});
 </script>
 
