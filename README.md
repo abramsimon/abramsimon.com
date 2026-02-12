@@ -78,10 +78,14 @@ The site includes a shop for merch, vinyl, whole bean coffee, and accessories:
    ```ini
    STRIPE_SECRET_KEY=sk_test_...
    ```
-3. For Cloudflare deploy, set the secret:
-   ```bash
-   npx wrangler secret put STRIPE_SECRET_KEY
-   ```
+3. For Cloudflare **Pages** (Git integration or `wrangler pages deploy`): set the secret in the dashboard so the API route can read it.
+   - **Workers & Pages** → your project → **Settings** → **Environment variables**.
+   - **Add variable** (Production, and Preview if needed): name `STRIPE_SECRET_KEY`, value your key.
+   - Turn **Encrypt** on so it’s stored as a secret. Save and **redeploy**.
+   - If you use **Workers** only (e.g. `wrangler deploy` with a worker config), you can instead run:
+     ```bash
+     npx wrangler secret put STRIPE_SECRET_KEY
+     ```
 
 ### Cloudflare deploy
 

@@ -11,12 +11,19 @@ interface CheckoutItem {
 
 export const POST: APIRoute = async ({ request, locals }) => {
 	const runtime = (locals as { runtime?: { env?: Record<string, string> } }).runtime;
-	const env = runtime?.env ?? {};
-	const secretKey = env.STRIPE_SECRET_KEY;
+	const env = runtime?.env ?? (runtime as unknown as Record<string, string> | undefined);
+	const secretKey =
+		typeof env?.STRIPE_SECRET_KEY === 'string'
+			? env.STRIPE_SECRET_KEY
+			: undefined;
 
 	if (!secretKey) {
 		return new Response(
-			JSON.stringify({ error: 'Stripe is not configured (missing STRIPE_SECRET_KEY)' }),
+			JSON.stringify({
+				error: 'Stripe is not configured (missing STRIPE_SECRET_KEY)',
+				hint:
+					'If you deployed via Cloudflare Pages: Workers & Pages → your project → Settings → Environment variables → Add variable (Production) → name STRIPE_SECRET_KEY, value your key, then Encrypt. Redeploy after saving. If you use Workers: run wrangler secret put STRIPE_SECRET_KEY.',
+			}),
 			{ status: 500, headers: { 'Content-Type': 'application/json' } }
 		);
 	}
