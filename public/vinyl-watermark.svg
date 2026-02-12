@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none" stroke="rgba(34,24,20,0.08)" stroke-width="0.6">
+  <!-- outer edge -->
+  <circle cx="200" cy="200" r="198"/>
+  <!-- grooves (concentric arcs for a record look) -->
+  <circle cx="200" cy="200" r="165"/>
+  <circle cx="200" cy="200" r="140"/>
+  <circle cx="200" cy="200" r="115"/>
+  <circle cx="200" cy="200" r="90"/>
+  <circle cx="200" cy="200" r="65"/>
+  <!-- label outer -->
+  <circle cx="200" cy="200" r="45"/>
+  <!-- center hole -->
+  <circle cx="200" cy="200" r="12" fill="rgba(249,242,230,0.4)" stroke="rgba(34,24,20,0.06)"/>
+</svg>
