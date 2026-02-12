@@ -3,30 +3,70 @@ import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
 ---
 
-<header>
+<header id="site-header">
 	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="internal-links">
+		<h2>
+			<a href="/" class="site-title">
+				<img src="/logo.png" alt="" width="32" height="32" class="logo" />
+				{SITE_TITLE}
+			</a>
+		</h2>
+		<div class="internal-links" id="nav-links">
 			<HeaderLink href="/">Home</HeaderLink>
 			<HeaderLink href="/shop/">Shop</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/about">About</HeaderLink>
 		</div>
-		<div class="social-links">
-			<button type="button" id="cart-open-btn" class="cart-open-btn" aria-label="Open shopping cart">
-				<svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-					<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-					<line x1="3" y1="6" x2="21" y2="6" />
-					<path d="M16 10a4 4 0 0 1-8 0" />
-				</svg>
-				<span id="cart-count" class="cart-count" aria-hidden="true">0</span>
+		<div class="nav-right">
+			<button type="button" class="hamburger-btn" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
+				<span class="hamburger-line"></span>
+				<span class="hamburger-line"></span>
+				<span class="hamburger-line"></span>
 			</button>
-			<span class="social-pill">Open late • Analog only</span>
+			<div class="social-links">
+				<button type="button" id="cart-open-btn" class="cart-open-btn" aria-label="Open shopping cart">
+					<svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+						<line x1="3" y1="6" x2="21" y2="6" />
+						<path d="M16 10a4 4 0 0 1-8 0" />
+					</svg>
+					<span id="cart-count" class="cart-count" aria-hidden="true">0</span>
+				</button>
+				<span class="social-pill">Open late • Analog only</span>
+			</div>
 		</div>
 	</nav>
 </header>
+<script>
+	const header = document.getElementById('site-header');
+	const hamburger = document.getElementById('hamburger-btn');
+	const navLinks = document.getElementById('nav-links');
+	if (header && hamburger && navLinks) {
+		hamburger.addEventListener('click', () => {
+			const open = header.classList.toggle('menu-open');
+			hamburger.setAttribute('aria-expanded', String(open));
+		});
+		navLinks.querySelectorAll('a').forEach((link) => {
+			link.addEventListener('click', () => {
+				header.classList.remove('menu-open');
+				hamburger.setAttribute('aria-expanded', 'false');
+			});
+		});
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') {
+				header.classList.remove('menu-open');
+				hamburger.setAttribute('aria-expanded', 'false');
+			}
+		});
+	}
+</script>
 <style>
 	header {
+		position: fixed;
+		top: 1rem;
+		left: 1rem;
+		right: 1rem;
+		z-index: 100;
 		margin: 0;
 		padding: 0 1.25em;
 		background: linear-gradient(
@@ -36,6 +76,7 @@ import { SITE_TITLE } from '../consts';
 		);
 		color: #fdf8ef;
 		box-shadow: 0 14px 30px rgba(var(--coffee-dark), 0.7);
+		border-radius: 12px;
 	}
 	h2 {
 		margin: 0;
@@ -44,6 +85,28 @@ import { SITE_TITLE } from '../consts';
 		text-transform: uppercase;
 	}
 
+	.site-title {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		text-decoration: none;
+		color: inherit;
+	}
+	.site-title .logo {
+		display: block;
+		width: 32px;
+		height: 32px;
+		object-fit: contain;
+		animation: logo-spin 10s linear infinite;
+	}
+	@keyframes logo-spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
 	h2 a,
 	h2 a.active {
 		text-decoration: none;
@@ -53,6 +116,47 @@ import { SITE_TITLE } from '../consts';
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		position: relative;
+	}
+	.nav-right {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+	.hamburger-btn {
+		display: none;
+		flex-direction: column;
+		justify-content: center;
+		gap: 5px;
+		width: 2.5rem;
+		height: 2.5rem;
+		padding: 0.35rem;
+		background: transparent;
+		border: none;
+		color: rgba(255, 251, 244, 0.9);
+		cursor: pointer;
+		border-radius: 6px;
+	}
+	.hamburger-btn:hover {
+		color: #fff;
+		background: rgba(255, 255, 255, 0.1);
+	}
+	.hamburger-line {
+		display: block;
+		width: 100%;
+		height: 2px;
+		background: currentColor;
+		border-radius: 1px;
+		transition: transform 0.2s ease, opacity 0.2s ease;
+	}
+	header.menu-open .hamburger-line:nth-child(1) {
+		transform: translateY(7px) rotate(45deg);
+	}
+	header.menu-open .hamburger-line:nth-child(2) {
+		opacity: 0;
+	}
+	header.menu-open .hamburger-line:nth-child(3) {
+		transform: translateY(-7px) rotate(-45deg);
 	}
 	nav a {
 		padding: 1em 0.5em;
@@ -127,7 +231,53 @@ import { SITE_TITLE } from '../consts';
 	}
 
 	@media (max-width: 720px) {
-		.social-links {
+		.hamburger-btn {
+			display: flex;
+		}
+		.internal-links {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			margin: 0 -1.25em;
+			padding: 0 1.25em 1em;
+			background: linear-gradient(
+				180deg,
+				rgba(var(--coffee), 0.98),
+				rgba(var(--coffee-dark), 0.98)
+			);
+			border-radius: 0 0 12px 12px;
+			box-shadow: 0 14px 30px rgba(var(--coffee-dark), 0.5);
+			max-height: 0;
+			overflow: hidden;
+			opacity: 0;
+			visibility: hidden;
+			transition: max-height 0.3s ease, opacity 0.2s ease, visibility 0.2s ease;
+		}
+		header.menu-open .internal-links {
+			max-height: 20rem;
+			opacity: 1;
+			visibility: visible;
+			margin-top: 0.5rem;
+		}
+		.internal-links a {
+			display: block;
+			padding: 0.75em 0.5em;
+			border-bottom: 1px solid rgba(255, 251, 244, 0.1);
+			border-left: 3px solid transparent;
+		}
+		.internal-links a.active {
+			border-left-color: var(--accent);
+			border-bottom-color: transparent;
+			background: rgba(var(--mint), 0.08);
+		}
+		.internal-links a:last-child {
+			border-bottom: none;
+		}
+		.social-links .social-pill {
 			display: none;
 		}
 	}

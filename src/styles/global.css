@@ -45,6 +45,7 @@ body {
 	background:
 		url('/vinyl-watermark.svg') center / cover no-repeat,
 		linear-gradient(var(--gray-gradient)) no-repeat;
+	background-attachment: fixed;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	color: rgb(var(--gray-dark));
@@ -170,6 +171,8 @@ hr {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
+	/* Reserve space for fixed header (1rem top gap + header bar height) */
+	padding-top: 5rem;
 }
 
 .content {
