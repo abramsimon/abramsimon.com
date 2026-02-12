@@ -168,7 +168,7 @@ import { CART_STORAGE_KEY, type CartItem } from '../lib/cart';
 				.then((r) => r.json())
 				.then((data) => {
 					if (data.url) window.location.href = data.url;
-					else alert(data.error || 'Checkout failed');
+					else alert([data.error || 'Checkout failed', data.hint].filter(Boolean).join('\n\n'));
 				})
 				.catch(() => alert('Checkout failed'));
 			return;
