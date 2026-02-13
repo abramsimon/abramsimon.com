@@ -2,18 +2,33 @@
 export const prerender = true;
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const latestPost = allPosts
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())[0] ?? null;
 ---
 
 <SiteLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<section class="hero">
-		<p class="eyebrow">Coffee • Records • Community</p>
-		<h1>Brew & Groove</h1>
-		<p class="tagline">
-			A cozy corner for slow-pour espresso, classic vinyl, and long conversations.
-		</p>
-		<div class="hero-actions">
-			<a href="/blog" class="btn btn-primary">Spin the latest notes</a>
-			<a href="/about" class="btn btn-ghost">About the house blend</a>
+	<section class="hero hero--image">
+		<div class="hero__bg" aria-hidden="true">
+			<img src="/hero_01.png" alt="" width="1920" height="1080" />
+		</div>
+		<div class="hero__overlay">
+			<p class="hero__eyebrow">Coffee • Records • Community</p>
+			<h1 class="hero__slogan">Where every cup has a soundtrack.</h1>
+			{latestPost && (
+				<div class="hero__blurb">
+					<p class="hero__blurb-title">{latestPost.data.title}</p>
+					<p class="hero__blurb-desc">{latestPost.data.description}</p>
+					<a href={`/blog/${latestPost.id}/`} class="btn btn-primary">hear more...</a>
+				</div>
+			)}
+			{!latestPost && (
+				<div class="hero-actions">
+					<a href="/blog" class="btn btn-primary">Spin the latest notes</a>
+				</div>
+			)}
 		</div>
 	</section>
 
